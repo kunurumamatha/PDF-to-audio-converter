@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF to Audio Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(45deg, #ff6a00, #ee0979);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+      padding: 12px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 2px solid #eee;
+    }
+
+    button {
+      padding: 12px 25px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #success-message {
+      color: green;
+      margin-top: 20px;
+    }
+
+    #error-message {
+      color: red;
+      margin-top: 20px;
+    }
+
+    .audio-link {
+      color: #ff6a00;
+      font-size: 18px;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>PDF to Audio Converter</h1>
+    <form action="/" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".pdf" required>
+      <button type="submit">Start Conversion</button>
+    </form>
+
+    {% if success_message %}
+      <div id="success-message">{{ success_message }}</div>
+      <div>
+        <a href="{{ audio_url }}" class="audio-link" download>Click here to download the audio</a>
+      </div>
+    {% endif %}
+
+    {% if error_message %}
+      <div id="error-message">{{ error_message }}</div>
+    {% endif %}
+  </div>
+
+</body>
+</html>
