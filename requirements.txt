@@ -2,3 +2,4 @@ Flask
 pdfplumber
 gTTS
 Werkzeug
+pyttsx3
