@@ -3,3 +3,4 @@ pdfplumber
 gTTS
 Werkzeug
 pyttsx3
+PyPDF2
