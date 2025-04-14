@@ -4,7 +4,8 @@ import os
 import pyttsx3
 import pdfplumber
 
-app = Flask(__name__)
+# Initialize Flask app with template folder specified
+app = Flask(__name__, template_folder='templates')
 
 # Configuration for file handling
 app.config['UPLOAD_FOLDER'] = 'uploads'
