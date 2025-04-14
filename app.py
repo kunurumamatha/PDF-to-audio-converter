@@ -4,8 +4,7 @@ import os
 import pyttsx3
 import pdfplumber
 
-app = Flask(__name__, template_folder='C:/Users/kunur/OneDrive/Documents/PROJECT/templates')
-
+app = Flask(__name__)
 
 # Configuration for file handling
 app.config['UPLOAD_FOLDER'] = 'uploads'
