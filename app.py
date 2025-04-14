@@ -51,40 +51,34 @@ def index():
 def convert_pdf_to_audio():
     """Handle the file upload and conversion to audio."""
     try:
-        # Check if 'pdf' key is in the request files
         if 'pdf' not in request.files:
             return jsonify({'error': 'No file part'}), 400
 
         pdf = request.files['pdf']
-
-        # If no file is selected
         if pdf.filename == '':
             return jsonify({'error': 'No selected file'}), 400
 
-        # Validate file extension
         if not allowed_file(pdf.filename):
             return jsonify({'error': 'Invalid file type. Please upload a PDF.'}), 400
 
-        # Secure and save the file
         filename = secure_filename(pdf.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         pdf.save(file_path)
 
-        # Extract text from the PDF
         text = pdf_to_text(file_path)
         if not text:
             return jsonify({'error': 'PDF has no readable text or failed to extract text'}), 400
 
-        # Generate audio file
         output_file = os.path.join(app.config['OUTPUT_FOLDER'], f"{filename.rsplit('.', 1)[0]}.mp3")
         text_to_audio(text, output_file)
 
-        # Return the generated audio file as a download
         return send_file(output_file, as_attachment=True)
 
     except Exception as e:
         print(f"Error processing the request: {e}")
         return jsonify({'error': 'An error occurred on the server. Please try again later.'}), 500
 
+# ✅ Render-specific host and port configuration
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
