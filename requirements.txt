@@ -1,0 +1,7 @@
+Flask
+pdfplumber
+gTTS
+Werkzeug
+pyttsx3
+PyPDF2
+gunicorn

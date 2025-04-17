@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Audio Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        form {
+            border: 2px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background: #fff;
+            text-align: center;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        audio {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF to Audio Converter</h1>
+    <form id="uploadForm">
+        <input type="file" name="pdf" accept="application/pdf" required />
+        <button type="submit">Convert to Audio</button>
+    </form>
+    <p id="message"></p>
+
+    <!-- Audio player to play the audio directly in the browser -->
+    <audio id="audioPlayer" controls style="display:none;">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const message = document.getElementById('message');
+            const audioPlayer = document.getElementById('audioPlayer');
+
+            try {
+                message.textContent = 'Uploading and converting...';
+                const response = await fetch('/convert', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    audioPlayer.src = url;
+                    audioPlayer.style.display = 'block';
+                    audioPlayer.play();
+                    message.textContent = 'Conversion successful! Playing audio.';
+                } else {
+                    const error = await response.json();
+                    message.textContent = `Error: ${error.error}`;
+                }
+            } catch (err) {
+                message.textContent = 'An error occurred.';
+            }
+        });
+    </script>
+</body>
+</html>
