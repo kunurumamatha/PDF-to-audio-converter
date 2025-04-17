@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file, render_template
 from werkzeug.utils import secure_filename
+from gtts import gTTS
 import os
-import pyttsx3
 import pdfplumber
 
 # Initialize Flask app with template folder specified
@@ -18,39 +18,35 @@ os.makedirs(app.config['OUTPUT_FOLDER'], exist_ok=True)
 
 # Helper function to check file extension
 def allowed_file(filename):
-    """Check if the file has a valid extension (PDF)."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-# Function to extract text from the PDF
+# Extract text from PDF
 def pdf_to_text(file_path):
-    """Extract text from a PDF file using pdfplumber."""
     try:
         with pdfplumber.open(file_path) as pdf:
-            text = ''.join([page.extract_text() for page in pdf.pages])
+            text = ''.join([page.extract_text() or '' for page in pdf.pages])
         return text
     except Exception as e:
         print(f"Error extracting text from PDF: {e}")
         return None
 
-# Function to convert text to audio
+# Convert text to audio using gTTS
 def text_to_audio(text, output_file):
-    """Convert extracted text into audio using pyttsx3 and save to file."""
     try:
-        engine = pyttsx3.init()
-        engine.save_to_file(text, output_file)
-        engine.runAndWait()
+        tts = gTTS(text)
+        tts.save(output_file)
     except Exception as e:
         print(f"Error converting text to audio: {e}")
         return None
 
+# Home page
 @app.route('/')
 def index():
-    """Render the home page with the form to upload a PDF."""
     return render_template("index.html")
 
+# PDF upload and conversion
 @app.route('/convert', methods=['POST'])
 def convert_pdf_to_audio():
-    """Handle the file upload and conversion to audio."""
     try:
         if 'pdf' not in request.files:
             return jsonify({'error': 'No file part'}), 400
@@ -79,7 +75,7 @@ def convert_pdf_to_audio():
         print(f"Error processing the request: {e}")
         return jsonify({'error': 'An error occurred on the server. Please try again later.'}), 500
 
-# ✅ Render-specific host and port configuration
+# Run the app
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
